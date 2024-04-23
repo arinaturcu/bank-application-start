@@ -14,16 +14,31 @@ import com.luxoft.bankapp.service.BankService;
 public class BankApplication {
 	
 	private static Bank bank;
-	
+
+	/*
+	 * Implement a feature of displaying the bank statistics by calling corresponding
+	 * methods of the BankReport class from the BankApplication. Define a command line
+	 * argument that will launch BankApplication in special mode java BankApplication
+	 * -statistics and will read the ‘display statistic’ command from the console.
+	 */
+
 	public static void main(String[] args) {
 		bank = new Bank();
 		modifyBank();
 		printBalance();
 		BankService.printMaximumAmountToWithdraw(bank);
+
+		// Implement a feature of displaying the bank statistics by calling corresponding
+		// methods of the BankReport class from the BankApplication. Define a command line
+		// argument that will launch BankApplication in special mode java BankApplication
+		// -statistics and will read the ‘display statistic’ command from the console.
+		if (args.length > 0 && args[0].equals("-statistics")) {
+			bank.displayStatistics();
+		}
 	}
 	
 	private static void modifyBank() {
-		Client client1 = new Client("John", Gender.MALE);
+		Client client1 = new Client("John", Gender.MALE, "New York");
 		Account account1 = new SavingAccount(1, 100);
 		Account account2 = new CheckingAccount(2, 100, 20);
 		client1.addAccount(account1);
