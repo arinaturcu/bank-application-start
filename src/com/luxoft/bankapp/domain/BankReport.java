@@ -1,7 +1,6 @@
 package com.luxoft.bankapp.domain;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * This class does not use streams
@@ -51,7 +50,8 @@ public class BankReport {
     }
 
     /**
-     * Returns the total amount of credits granted to the bank clients. That is, the sum of all values above account balance for CheckingAccount
+     * Returns the total amount of credits granted to the bank clients.
+     * That is, the sum of all values above account balance for CheckingAccount
      */
     double getBankCreditSum(Bank bank) {
         double sum = 0;

@@ -6,6 +6,8 @@ import com.luxoft.bankapp.domain.CheckingAccount;
 import com.luxoft.bankapp.domain.Client;
 import com.luxoft.bankapp.domain.Gender;
 import com.luxoft.bankapp.domain.SavingAccount;
+import com.luxoft.bankapp.domain.mail.Email;
+import com.luxoft.bankapp.domain.mail.EmailService;
 import com.luxoft.bankapp.exceptions.ClientExistsException;
 import com.luxoft.bankapp.exceptions.NotEnoughFundsException;
 import com.luxoft.bankapp.exceptions.OverdraftLimitExceededException;
@@ -15,26 +17,19 @@ public class BankApplication {
 	
 	private static Bank bank;
 
-	/*
-	 * Implement a feature of displaying the bank statistics by calling corresponding
-	 * methods of the BankReport class from the BankApplication. Define a command line
-	 * argument that will launch BankApplication in special mode java BankApplication
-	 * -statistics and will read the ‘display statistic’ command from the console.
-	 */
-
 	public static void main(String[] args) {
-		bank = new Bank();
+        EmailService emailService = new EmailService();
+
+		bank = new Bank(emailService);
 		modifyBank();
 		printBalance();
 		BankService.printMaximumAmountToWithdraw(bank);
 
-		// Implement a feature of displaying the bank statistics by calling corresponding
-		// methods of the BankReport class from the BankApplication. Define a command line
-		// argument that will launch BankApplication in special mode java BankApplication
-		// -statistics and will read the ‘display statistic’ command from the console.
 		if (args.length > 0 && args[0].equals("-statistics")) {
 			bank.displayStatistics();
 		}
+
+		emailService.close();
 	}
 	
 	private static void modifyBank() {
@@ -43,7 +38,7 @@ public class BankApplication {
 		Account account2 = new CheckingAccount(2, 100, 20);
 		client1.addAccount(account1);
 		client1.addAccount(account2);
-		
+
 		try {
 		   BankService.addClient(bank, client1);
 		} catch(ClientExistsException e) {
@@ -79,7 +74,20 @@ public class BankApplication {
 		  BankService.addClient(bank, client1);
 		} catch(ClientExistsException e) {
 		  System.out.format("Cannot add an already existing client: %s%n", client1);
-	    } 
+	    }
+
+
+		Client client2 = new Client("Jane", Gender.FEMALE, "Los Angeles");
+		Account account3 = new SavingAccount(3, 200);
+		Account account4 = new CheckingAccount(4, 200, 30);
+		client2.addAccount(account3);
+		client2.addAccount(account4);
+
+		try {
+			BankService.addClient(bank, client2);
+		} catch(ClientExistsException e) {
+			System.out.format("Cannot add an already existing client: %s%n", client2.getName());
+		}
 	}
 	
 	private static void printBalance() {

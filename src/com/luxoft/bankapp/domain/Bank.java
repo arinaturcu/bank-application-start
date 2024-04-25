@@ -3,6 +3,8 @@ package com.luxoft.bankapp.domain;
 import java.text.DateFormat;
 import java.util.*;
 
+import com.luxoft.bankapp.domain.mail.Email;
+import com.luxoft.bankapp.domain.mail.EmailService;
 import com.luxoft.bankapp.exceptions.ClientExistsException;
 import com.luxoft.bankapp.utils.ClientRegistrationListener;
 
@@ -14,11 +16,18 @@ public class Bank {
 	private int printedClients = 0;
 	private int emailedClients = 0;
 	private int debuggedClients = 0;
+
+	private EmailService emailService;
 	
 	public Bank() {
 		listeners.add(new PrintClientListener());
 		listeners.add(new EmailNotificationListener());
 		listeners.add(new DebugListener());
+	}
+
+	public Bank(EmailService emailService) {
+		this();
+		this.emailService = emailService;
 	}
 	
 	public int getPrintedClients() {
@@ -65,6 +74,11 @@ public class Bank {
 		@Override 
 		public void onClientAdded(Client client) {
 	        System.out.println("Notification email for client " + client.getName() + " to be sent");
+
+			if (emailService != null) {
+				emailService.sendNotificationEmail(new Email(client, "bank", client.getName(), "Welcome to our bank!", "Welcome to our bank!"));
+			}
+
 	        emailedClients++;
 	    }
 	}
